@@ -1,5 +1,5 @@
 # What is this?
-My attempts to solve [advent of code 2021](https://adventofcode.com/2021) using golang.
+My attempts to solve [advent of code](https://adventofcode.com) using golang.
 
 # Why?
 Because I wanted to...
