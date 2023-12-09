@@ -1,7 +1,5 @@
 package day12
 
-import "fmt"
-
 type Node struct {
 	value string
 	visit int
@@ -9,13 +7,13 @@ type Node struct {
 
 type Graph struct {
 	adjList   map[Node][]Node
-	PathCount int
+	pathCount int
 }
 
 func NewGraph() *Graph {
 	g := &Graph{
 		adjList:   make(map[Node][]Node),
-		PathCount: 0,
+		pathCount: 0,
 	}
 	return g
 }
@@ -24,7 +22,12 @@ func (g *Graph) AddEdge(source, dest Node) {
 	g.adjList[source] = append(g.adjList[source], dest)
 }
 
+func (g *Graph) PathCount() int {
+	return g.pathCount
+}
+
 func (g *Graph) FindAllPaths(source, dest Node) {
+	//fmt.Println(g.adjList)
 	visited := make(map[Node]int)
 
 	var localPaths []Node
@@ -35,9 +38,10 @@ func (g *Graph) FindAllPaths(source, dest Node) {
 
 func (g *Graph) findAllPathsInternal(source, dest Node, visited map[Node]int, paths []Node) {
 	if source == dest {
-		g.PathCount = g.PathCount + 1
-		fmt.Println("------------------------------------")
-		fmt.Println(paths)
+		g.pathCount = g.pathCount + 1
+		//fmt.Println("------------------------------------")
+		//fmt.Println(visited)
+		//fmt.Println(paths)
 		//fmt.Println(g.pathCount)
 		return
 	}
@@ -49,8 +53,7 @@ func (g *Graph) findAllPathsInternal(source, dest Node, visited map[Node]int, pa
 	}
 
 	for _, node := range g.adjList[source] {
-		// Not visited the number of times
-		if visited[node] < node.visit || node.visit < 0 {
+		if node.visit < 0 || visited[node] < node.visit {
 			paths = append(paths, node)
 			g.findAllPathsInternal(node, dest, visited, paths)
 			paths = paths[:len(paths)-1]

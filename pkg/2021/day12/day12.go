@@ -67,17 +67,12 @@ func Part1() {
 	}
 
 	graph.FindAllPaths(
-		Node{
-			value: "start",
-			visit: 1,
-		}, Node{
-			value: "end",
-			visit: 1,
-		},
+		Node{value: "start", visit: 1},
+		Node{value: "end", visit: 1},
 	)
 
 	fmt.Println("------------------------------------")
-	fmt.Println("Count:", graph.PathCount)
+	fmt.Println("Count:", graph.PathCount())
 
 	elapsed := time.Since(start)
 	fmt.Println("Function call took ", elapsed)
@@ -87,8 +82,20 @@ func Part2() {
 	start := time.Now()
 	paths := loadInput()
 
+	var firstLower string
+	for _, path := range paths {
+		split := strings.Split(path, "-")
+		if isLower(split[0]) && split[1] == "start" {
+			firstLower = split[0]
+			break
+		}
+		if isLower(split[1]) && split[0] == "start" {
+			firstLower = split[1]
+			break
+		}
+	}
+
 	graph := NewGraph()
-	firstSmall := false
 
 	for _, path := range paths {
 		var source Node
@@ -101,27 +108,24 @@ func Part2() {
 			value: split[0],
 			visit: 1,
 		}
-		if isLower(split[0]) && !firstSmall {
-			// first lower is 2 visit only
-			source.visit = 2
-			firstSmall = true
-		} else if isUpper(split[0]) {
+		if isUpper(split[0]) {
 			// Upper is unlimited visits
 			source.visit = -1
 		}
-
+		if split[0] == firstLower {
+			source.visit = 2
+		}
 		// lower is 1 visit only
 		dest = Node{
 			value: split[1],
 			visit: 1,
 		}
-		if isLower(split[1]) && !firstSmall {
-			// first lower is 2 visit only
-			dest.visit = 2
-			firstSmall = true
-		} else if isUpper(split[1]) {
+		if isUpper(split[1]) {
 			// Upper is unlimited visits
 			dest.visit = -1
+		}
+		if split[1] == firstLower {
+			dest.visit = 2
 		}
 
 		graph.AddEdge(source, dest)
@@ -129,17 +133,12 @@ func Part2() {
 	}
 
 	graph.FindAllPaths(
-		Node{
-			value: "start",
-			visit: 1,
-		}, Node{
-			value: "end",
-			visit: 1,
-		},
+		Node{value: "start", visit: 1},
+		Node{value: "end", visit: 1},
 	)
 
 	fmt.Println("------------------------------------")
-	fmt.Println("Count:", graph.PathCount)
+	fmt.Println("Count:", graph.PathCount())
 
 	elapsed := time.Since(start)
 	fmt.Println("Function call took ", elapsed)
